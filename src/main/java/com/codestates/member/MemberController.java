@@ -29,4 +29,9 @@ public class MemberController {
         System.out.println("Member Login Successfully");
         return "login";
     }
+
+    @GetMapping("/my-page")
+    public String myPage() {
+        return "my-page";
+    }
 }
