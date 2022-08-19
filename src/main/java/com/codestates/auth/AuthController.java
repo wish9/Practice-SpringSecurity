@@ -13,6 +13,7 @@ public class AuthController {
         return "login";
     }
 
+
     @PostMapping("/login")
     public String login() {
         System.out.println("Login successfully!");
