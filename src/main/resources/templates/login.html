@@ -7,13 +7,24 @@
     <title>Hello Spring Security Coffee Shop</title>
 </head>
 <body>
-    <div layout:fragment="content">
+    <div class="container" layout:fragment="content">
         <form action="/process_login" method="post">
-            <p><input type="email" name="username" placeholder="Email" /></p>
-            <p><input type="password" name="password" placeholder="Password" /></p>
-            <p><button>로그인</button></p>
+            <div class="row">
+                <div class="col-xs-2">
+                    <input type="email" name="username"  class="form-control" placeholder="Email" />
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-xs-2">
+                    <input type="password" name="password"  class="form-control" placeholder="Password" />
+                </div>
+            </div>
+
+            <button class="btn btn-outline-secondary" style="margin-top: 20px">로그인</button>
         </form>
-        <a href="/members/register">회원가입</a>
+        <div style="margin-top: 20px">
+            <a href="/members/register">회원가입</a>
+        </div>
     </div>
 </body>
 </html>
