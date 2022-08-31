@@ -26,7 +26,7 @@ public class MemberController {
         Member member = mapper.memberPostToMember(requestBody);
         memberService.createMember(member);
 
-        System.out.println("Member Login Successfully");
+        System.out.println("Member Registration Successfully");
         return "login";
     }
 
