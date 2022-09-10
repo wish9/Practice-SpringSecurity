@@ -11,7 +11,7 @@ public class MemberDto {
     @AllArgsConstructor
     public static class Post {
         @NotBlank(message = "이름은 공백이 아니어야 합니다.")
-        private String name;
+        private String fullName;
 
         @NotBlank
         @Email
@@ -26,7 +26,7 @@ public class MemberDto {
     public static class Response {
         private long memberId;
         private String email;
-        private String name;
+        private String fullName;
         private String phone;
         private Member.MemberStatus memberStatus;
 
