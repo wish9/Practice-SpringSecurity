@@ -51,4 +51,9 @@ public class Member extends Auditable {
            this.status = status;
         }
     }
+
+    public enum MemberRole {
+        ROLE_USER,
+        ROLE_ADMIN
+    }
 }
