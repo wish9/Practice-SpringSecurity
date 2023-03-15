@@ -21,10 +21,14 @@ public class SecurityConfiguration {
                 .loginPage("/auths/login-form")   // 만들어 둔 커스텀 로그인 페이지를 사용하도록 설정
                 .loginProcessingUrl("/process_login")    // 로그인 인증 요청을 수행할 요청 URL을 지정
                 .failureUrl("/auths/login-form?error")   // 로그인 실패시 뜨게 할 화면 지정
-                .and()                                   // Spring Security 보안 설정을 메서드 체인 형태로 구성
-                .authorizeHttpRequests()                     // 클라이언트의 요청이 들어오면 접근 권한을 확인하겠다고 정의
-                .anyRequest()                            // 클라이언트의 모든 요청에 대해
-                .permitAll();                            // 접근을 허용
+                .and() // Spring Security 보안 설정을 메서드 체인 형태로 구성
+                .exceptionHandling().accessDeniedPage("/auths/access-denied")   // 권한이 없는 사용자가 특정 request URI에 접근할 경우 발생하는 에러를 처리하기 위한 페이지 설정
+                .and()
+                .authorizeHttpRequests(authorize -> authorize                  //  request URI에 대한 접근 권한을 부여
+                        .antMatchers("/orders/**").hasRole("ADMIN")        // ADMIN을 부여받은 사용자만 /orders로 시작하는 모든 URL에 접근할 수 있게 설정 (order 하위 URL 모두 접근 가능, *한개만 쓰면 /Order의 하위 URL depth가 1인 URL만 허용
+                        .antMatchers("/members/my-page").hasRole("USER")   // USER Role을 부여받은 사용자만 /members/my-page URL에 접근할 수 있음
+                        .antMatchers("⁄**").permitAll()                    // 앞에서 지정한 URL 이외의 나머지 모든 URL은 Role에 상관없이 접근이 가능
+                );
 
         return http.build();
     }
