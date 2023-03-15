@@ -21,6 +21,10 @@ public class SecurityConfiguration {
                 .loginPage("/auths/login-form")   // 만들어 둔 커스텀 로그인 페이지를 사용하도록 설정
                 .loginProcessingUrl("/process_login")    // 로그인 인증 요청을 수행할 요청 URL을 지정
                 .failureUrl("/auths/login-form?error")   // 로그인 실패시 뜨게 할 화면 지정
+                .and()
+                .logout()                        // 로그아웃 설정을 위한 LogoutConfigurer 를 리턴
+                .logoutUrl("/logout")            // 로그아웃을 수행하기 위한 request URL을 지정 ("/" = 홈, 메인화면)
+                .logoutSuccessUrl("/")  // 로그아웃 이후 리다이렉트 할 URL 지정
                 .and() // Spring Security 보안 설정을 메서드 체인 형태로 구성
                 .exceptionHandling().accessDeniedPage("/auths/access-denied")   // 권한이 없는 사용자가 특정 request URI에 접근할 경우 발생하는 에러를 처리하기 위한 페이지 설정
                 .and()

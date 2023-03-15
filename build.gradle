@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
 	implementation 'com.google.code.gson:gson'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5' //  sec 태그를 사용하기 위해 추가
 }
 
 tasks.named('test') {

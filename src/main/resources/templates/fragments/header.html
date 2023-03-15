@@ -1,9 +1,19 @@
-﻿<html xmlns:th="http://www.thymeleaf.org">
+﻿<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"> <!-- sec 태그를 사용하기 위한 XML 네임스페이스를 지정 -->
     <body>
         <div align="right" th:fragment="header">
             <a href="/members/register" class="text-decoration-none">회원가입</a> |
-            <a href="/auths/login-form" class="text-decoration-none">로그인</a> |
-            <a href="/members/my-page" class="text-decoration-none">마이페이지</a>
+            <span sec:authorize="isAuthenticated()">  <!-- 현재 페이지에 접근한 사용자가 인증에 성공한 사용자인지(로그인 된건지) 체크 -->
+                <span sec:authorize="hasRole('USER')">  <!-- USER Role을 가진 사용자라면 -->
+                    <a href="/members/my-page" class="text-decoration-none">마이페이지</a> | <!-- 마이페이지 표시해주기 -->
+                </span>
+                <a href="/logout" class="text-decoration-none">로그아웃</a>  <!-- 로그인 됐을 경우 로그아웃창 보이게 하기 -->
+                <span th:text="${#authentication.name}">홍길동</span>님  <!-- 로그인 사용자의 username을 표시 -->
+            </span>
+
+            <span sec:authorize="!isAuthenticated()"> <!-- 로그인 안했으면 -->
+                <a href="/auths/login-form" class="text-decoration-none">로그인</a> <!-- 로그인 버튼 보이게 하기 -->
+            </span>
         </div>
     </body>
 </html>
