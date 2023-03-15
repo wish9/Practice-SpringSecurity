@@ -14,7 +14,7 @@ public class SecurityConfiguration {
 
     // HttpSecurity클래스 = HTTP 요청에 대한 보안 설정을 구성하기 위한 핵심 클래스
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // 권한부여
         http
                 .csrf().disable()                 // CSRF 공격에 대한 Spring Security에 대한 설정을 비활성화 (로컬 환경에서 테스트하기 때문)
                 .formLogin()                      // 기본적인 인증 방법을 폼 로그인 방식으로 지정
@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         return http.build();
     }
     @Bean
-    public UserDetailsManager userDetailsService() {
+    public UserDetailsManager userDetailsService() { // 정보 추가
 
         UserDetails userDetails = // user 정보를 포함하는 인터페이스
                 User.withDefaultPasswordEncoder()    // 디폴트 패스워드 인코더를 이용해 사용자 패스워드를 암호화
@@ -42,6 +42,15 @@ public class SecurityConfiguration {
                         .roles("USER")               // 역할을 USER로 설정
                         .build();
 
-        return new InMemoryUserDetailsManager(userDetails); // 위에서 설정한 userDetails을 구현해서 UserDetailsManager객체로 만들어 리턴
+        UserDetails admin = // 관리자 권한을 갖는 사용자 추가
+                User.withDefaultPasswordEncoder()
+                        .username("admin@gmail.com")
+                        .password("2222")
+                        .roles("ADMIN")
+                        .build();
+
+        return new InMemoryUserDetailsManager(userDetails, admin); // 위에서 설정한 userDetails을 구현해서 UserDetailsManager객체로 만들어 리턴
     }
+
+
 }
