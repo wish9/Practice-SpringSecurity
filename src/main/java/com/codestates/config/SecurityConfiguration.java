@@ -18,6 +18,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // 권한부여
         http
+                .headers().frameOptions().sameOrigin() // 웹 브라우저에서 H2 웹 콘솔을 정상적으로 사용하기 위한 설정
+                .and()
                 .csrf().disable()                 // CSRF 공격에 대한 Spring Security에 대한 설정을 비활성화 (로컬 환경에서 테스트하기 때문)
                 .formLogin()                      // 기본적인 인증 방법을 폼 로그인 방식으로 지정
                 .loginPage("/auths/login-form")   // 만들어 둔 커스텀 로그인 페이지를 사용하도록 설정
@@ -38,25 +40,26 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-    @Bean
-    public UserDetailsManager userDetailsService() { // 정보 추가
 
-        UserDetails userDetails = // user 정보를 포함하는 인터페이스
-                User.withDefaultPasswordEncoder()    // 디폴트 패스워드 인코더를 이용해 사용자 패스워드를 암호화
-                        .username("wjwee9@gmail.com") // username 설정
-                        .password("1111")            // 비번 설정
-                        .roles("USER")               // 역할을 USER로 설정
-                        .build();
-
-        UserDetails admin = // 관리자 권한을 갖는 사용자 추가
-                User.withDefaultPasswordEncoder()
-                        .username("admin@gmail.com")
-                        .password("2222")
-                        .roles("ADMIN")
-                        .build();
-
-        return new InMemoryUserDetailsManager(userDetails, admin); // 위에서 설정한 userDetails을 구현해서 UserDetailsManager객체로 만들어 리턴
-    }
+//    @Bean  InMemory설정 삭제
+//    public UserDetailsManager userDetailsService() { // 정보 추가
+//
+//        UserDetails userDetails = // user 정보를 포함하는 인터페이스
+//                User.withDefaultPasswordEncoder()    // 디폴트 패스워드 인코더를 이용해 사용자 패스워드를 암호화
+//                        .username("wjwee9@gmail.com") // username 설정
+//                        .password("1111")            // 비번 설정
+//                        .roles("USER")               // 역할을 USER로 설정
+//                        .build();
+//
+//        UserDetails admin = // 관리자 권한을 갖는 사용자 추가
+//                User.withDefaultPasswordEncoder()
+//                        .username("admin@gmail.com")
+//                        .password("2222")
+//                        .roles("ADMIN")
+//                        .build();
+//
+//        return new InMemoryUserDetailsManager(userDetails, admin); // 위에서 설정한 userDetails을 구현해서 UserDetailsManager객체로 만들어 리턴
+//    }
 
     @Bean // PasswordEncoder를 Bean으로 등록
     public PasswordEncoder passwordEncoder() {
