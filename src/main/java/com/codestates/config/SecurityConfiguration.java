@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -56,5 +58,9 @@ public class SecurityConfiguration {
         return new InMemoryUserDetailsManager(userDetails, admin); // 위에서 설정한 userDetails을 구현해서 UserDetailsManager객체로 만들어 리턴
     }
 
+    @Bean // PasswordEncoder를 Bean으로 등록
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();  // DelegatingPasswordEncoder가 실질적으로 PasswordEncoder 구현 객체를 생성해 준다.
+    }
 
 }
