@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 
-@Component
+//@Component
 public class HelloUserDetailsServiceV1 implements UserDetailsService {   // Custom UserDetailsService 구현 // DB에서 조회한 인증 정보를 기반으로 인증 처리하기 위한 커스텀 클래스
     private final MemberRepository memberRepository;
     private final HelloAuthorityUtils authorityUtils;

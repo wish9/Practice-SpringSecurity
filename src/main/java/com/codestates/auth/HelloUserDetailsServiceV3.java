@@ -14,14 +14,16 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 
-//    Custom UserDetails 사용
-//    HelloAuthorityUtils를 바로 사용(정적인 방식)하여 Spring Security에 Role 정보 제공
-//@Component
-public class HelloUserDetailsServiceV2 implements UserDetailsService {
+
+//  Custom UserDetails 사용
+//  User Role을 DB에서 조회한 후, HelloAuthorityUtils로 Spring Security에게 Role 정보 제공
+
+@Component
+public class HelloUserDetailsServiceV3 implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final HelloAuthorityUtils authorityUtils;
 
-    public HelloUserDetailsServiceV2(MemberRepository memberRepository, HelloAuthorityUtils authorityUtils) {
+    public HelloUserDetailsServiceV3(MemberRepository memberRepository, HelloAuthorityUtils authorityUtils) {
         this.memberRepository = memberRepository;
         this.authorityUtils = authorityUtils;
     }
@@ -31,21 +33,21 @@ public class HelloUserDetailsServiceV2 implements UserDetailsService {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        return new HelloUserDetails(findMember);  // Custom UserDetails 클래스의 생성자로 findMember를 전달하면서 코드를 간결화
+        return new HelloUserDetails(findMember);
     }
 
-    // Custom UserDetails 클래스
-    private final class HelloUserDetails extends Member implements UserDetails { // Spring Security의 User 정보로 변환 + 권한 정보 생성 (캡슐화)
+    private final class HelloUserDetails extends Member implements UserDetails {
         HelloUserDetails(Member member) {
             setMemberId(member.getMemberId());
             setFullName(member.getFullName());
             setEmail(member.getEmail());
             setPassword(member.getPassword());
+            setRoles(member.getRoles());        // HelloUserDetails가 상속하고 있는 Member에 DB에서 조회한 List roles를 전달
         }
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return authorityUtils.createAuthorities(this.getEmail());  // User의 권한 정보 생성 (캡슐화)
+            return authorityUtils.createAuthorities(this.getRoles()); // DB에 저장된 Role 정보로 User 권한 목록을 생성해서 파라미터로 전달
         }
 
         @Override
