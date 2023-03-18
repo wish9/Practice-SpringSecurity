@@ -16,31 +16,37 @@ import java.util.Optional;
 
 @Component
 public class HelloUserAuthenticationProvider implements AuthenticationProvider { // Custom AuthenticationProvider
-    private final HelloUserDetailsServiceV1 userDetailsService;
+    private final HelloUserDetailsServiceV3 userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    public HelloUserAuthenticationProvider(HelloUserDetailsServiceV1 userDetailsService,
+    public HelloUserAuthenticationProvider(HelloUserDetailsServiceV3 userDetailsService,
                                            PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // 회원 가입을 하지 않고 로그인을 시도할 경우 Whitelebel Error Page 오류가 발생했다.
+    // DBMemberService클래스의 verifyExistsEmail()메서드에서 등록된 회원 정보가 없으면, BusinessLogicException을 throw 하는데
+    // 이 BusinessLogicException이 Cusotm AuthenticationProvider를 거쳐 그대로 Spring Security 내부 영역으로 throw 되기 때문이였다.
 
+    // AuthenticationException을 rethrow 하도록 개선 authenticate()을 개선
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException { // 사용자 인증 여부를 결정하는 로직을 담당하는 메서드
-        UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) authentication;  // 입력 받은 authentication를 캐스팅하여 토큰 얻어 냄
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) authentication;
 
         String username = authToken.getName();
         Optional.ofNullable(username).orElseThrow(() -> new UsernameNotFoundException("Invalid User name or User Password"));
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            String password = userDetails.getPassword();
+            verifyCredentials(authToken.getCredentials(), password);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username); // userDetailsService를 이용해 데이터베이스에서 해당 사용자를 조회
-
-        String password = userDetails.getPassword();
-        verifyCredentials(authToken.getCredentials(), password);    // 로그인 시 입력한 비번과 DB에 저장된 비번이 일치하는지 검증
-
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();  // 일치한다면, 사용자의 권한 정보를 생성
-
-        return UsernamePasswordAuthenticationToken.authenticated(username, password, authorities); // 인증 정보 반환
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+            return UsernamePasswordAuthenticationToken.authenticated(username, password, authorities);
+        } catch (Exception ex) {
+            throw new UsernameNotFoundException(ex.getMessage()); // AuthenticationException으로 다시 throw
+            // UsernameNotFoundException은 AuthenticationException을 상속하는 하위 Exception
+        }
     }
 
     @Override

@@ -40,6 +40,6 @@ public class DBMemberService implements MemberService { // User의 인증 정보
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent())
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS); // 회원 가입을 하지 않고 로그인을 시도할 경우 여기서 BusinessLogicException을 throw
     }
 }
