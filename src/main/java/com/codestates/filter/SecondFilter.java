@@ -3,24 +3,24 @@ package com.codestates.filter;
 import javax.servlet.*;
 import java.io.IOException;
 
-public class FirstFilter implements Filter {
+public class SecondFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        System.out.println("FirstFilter 생성됨");
+        System.out.println("SecondFilter가 생성되었습니다.");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("========First 필터 시작========");
+        System.out.println("==========Second 필터 시작==========");
         chain.doFilter(request, response);
-        System.out.println("========First 필터 종료========");
+        System.out.println("==========Second 필터 종료==========");
     }
 
     @Override
     public void destroy() {
-        System.out.println("FirstFilter Destory");
+        System.out.println("SecondFilter가 사라집니다.");
         Filter.super.destroy();
     }
 }
